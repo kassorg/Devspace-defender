@@ -10,6 +10,7 @@ const boutonMusique = document.getElementById("musique");
 const largeurVaisseau = 72;
 const cadenceTir = 120;
 const frappesAvantBoss = 25;
+const clicsAvantSouris = 5;
 const vitesse = 14;
 const tailleAsteroide = 28;
 const vitesseAsteroide = 3;
@@ -17,6 +18,10 @@ const largeurLaser = 4;
 const hauteurLaser = 16;
 const vitesseLaser = 10;
 const largeurBoss = 384;
+const largeurSouris = 120;
+const vitesseSouris = 3;
+const vieSourisMax = 3;
+const pointsSouris = 30;
 const tailleChaton = 36;
 const vitesseChaton = 4;
 const pointsChaton = 2;
@@ -33,10 +38,12 @@ let points = 0;
 let vies = 3;
 let partieTerminee = false;
 let frappes = 0;
+let clics = 0;
 let dernierTir = 0;
 const lasers = [];
 const chatons = [];
 const bosses = [];
+const sourisListe = [];
 const touches = {
   gauche: false,
   droite: false,
@@ -109,6 +116,10 @@ function afficherInfos() {
   if (vivants > 0) {
     texte += "  ·  Boss : " + vivants;
   }
+  const sourisVivantes = sourisEncoreLa();
+  if (sourisVivantes > 0) {
+    texte += "  ·  Souris : " + sourisVivantes;
+  }
   infos.textContent = texte;
 }
 
@@ -163,6 +174,105 @@ function reinitialiserBoss() {
     bosses.push(creerEtatBoss(boss));
   }
   placerUnBoss(bosses[0], true);
+}
+
+function sourisEncoreLa() {
+  let nombre = 0;
+  for (let i = 0; i < sourisListe.length; i++) {
+    if (sourisListe[i].present) {
+      nombre += 1;
+    }
+  }
+  return nombre;
+}
+
+function creerElementSouris() {
+  const element = document.createElement("div");
+  element.className = "souris";
+  element.setAttribute("aria-label", "Mini boss souris");
+  const oreilleGauche = document.createElement("span");
+  oreilleGauche.className = "oreille gauche";
+  const oreilleDroite = document.createElement("span");
+  oreilleDroite.className = "oreille droite";
+  const oeilGauche = document.createElement("span");
+  oeilGauche.className = "oeil gauche";
+  const oeilDroit = document.createElement("span");
+  oeilDroit.className = "oeil droite";
+  oeilGauche.appendChild(document.createElement("span")).className = "pupille";
+  oeilDroit.appendChild(document.createElement("span")).className = "pupille";
+  const nez = document.createElement("span");
+  nez.className = "nez";
+  const queue = document.createElement("span");
+  queue.className = "queue";
+  const vie = document.createElement("span");
+  vie.className = "vie-boss";
+  element.appendChild(oreilleGauche);
+  element.appendChild(oreilleDroite);
+  element.appendChild(oeilGauche);
+  element.appendChild(oeilDroit);
+  element.appendChild(nez);
+  element.appendChild(queue);
+  element.appendChild(vie);
+  return element;
+}
+
+function ajouterSouris() {
+  const element = creerElementSouris();
+  espace.insertBefore(element, asteroide);
+  const limite = Math.max(0, espace.clientWidth - largeurSouris);
+  const etat = {
+    element: element,
+    vieElement: element.querySelector(".vie-boss"),
+    x: Math.random() * limite,
+    direction: Math.random() < 0.5 ? -1 : 1,
+    pointsDeVie: vieSourisMax,
+    present: true,
+  };
+  etat.element.style.left = etat.x + "px";
+  etat.vieElement.textContent = etat.pointsDeVie;
+  sourisListe.push(etat);
+  afficherInfos();
+}
+
+function deplacerSouris() {
+  const limite = Math.max(0, espace.clientWidth - largeurSouris);
+  for (let i = 0; i < sourisListe.length; i++) {
+    const etat = sourisListe[i];
+    if (!etat.present) {
+      continue;
+    }
+    etat.x += vitesseSouris * etat.direction;
+    if (etat.x <= 0) {
+      etat.x = 0;
+      etat.direction = 1;
+    }
+    if (etat.x >= limite) {
+      etat.x = limite;
+      etat.direction = -1;
+    }
+    etat.element.style.left = etat.x + "px";
+  }
+}
+
+function blesserSouris(etat) {
+  if (!etat.present) {
+    return;
+  }
+  etat.pointsDeVie -= 1;
+  etat.vieElement.textContent = etat.pointsDeVie;
+  if (etat.pointsDeVie <= 0) {
+    etat.present = false;
+    etat.element.hidden = true;
+    points += pointsSouris;
+  }
+  afficherInfos();
+}
+
+function effacerSouris() {
+  for (let i = 0; i < sourisListe.length; i++) {
+    sourisListe[i].element.remove();
+  }
+  sourisListe.length = 0;
 }
 
 function deplacerBoss() {
@@ -291,6 +401,19 @@ function verifierCollisions() {
   for (let i = lasers.length - 1; i >= 0; i--) {
     const zoneLaser = lasers[i].element.getBoundingClientRect();
     let toucheBoss = false;
+    for (let j = 0; j < sourisListe.length; j++) {
+      const etat = sourisListe[j];
+      if (etat.present && seTouchent(zoneLaser, etat.element.getBoundingClientRect())) {
+        lasers[i].element.remove();
+        lasers.splice(i, 1);
+        blesserSouris(etat);
+        toucheBoss = true;
+        break;
+      }
+    }
+    if (toucheBoss) {
+      continue;
+    }
     for (let j = 0; j < bosses.length; j++) {
       const etat = bosses[j];
       if (etat.present && seTouchent(zoneLaser, etat.element.getBoundingClientRect())) {
@@ -334,7 +457,9 @@ function rejouer() {
   touches.droite = false;
   touches.tir = false;
   frappes = 0;
+  clics = 0;
   dernierTir = 0;
+  effacerSouris();
   effacerLasers();
   effacerChatons();
   vaisseau.style.left = "50%";
@@ -375,13 +500,18 @@ function suivreVaisseau(oeil, distanceMax) {
 }
 
 function orienterYeux() {
-  const yeux = document.querySelectorAll(".boss .oeil, .chaton .oeil");
+  const yeux = document.querySelectorAll(".boss .oeil, .souris .oeil, .chaton .oeil");
   for (let i = 0; i < yeux.length; i++) {
-    const chat = yeux[i].closest(".boss, .chaton");
-    if (chat.hidden) {
+    const animal = yeux[i].closest(".boss, .souris, .chaton");
+    if (!animal || animal.hidden) {
       continue;
     }
-    const distanceMax = chat.classList.contains("boss") ? 12 : 2;
+    let distanceMax = 2;
+    if (animal.classList.contains("boss")) {
+      distanceMax = 12;
+    } else if (animal.classList.contains("souris")) {
+      distanceMax = 3;
+    }
     suivreVaisseau(yeux[i], distanceMax);
   }
 }
@@ -414,6 +544,7 @@ function deplacer() {
   tirerMitraillettes();
   descendreAsteroide();
   deplacerBoss();
+  deplacerSouris();
   descendreChatons();
   orienterYeux();
   monterLasers();
@@ -441,6 +572,16 @@ document.addEventListener("keydown", (evenement) => {
   if (evenement.code === "Space") {
     touches.tir = true;
     evenement.preventDefault();
+  }
+});
+
+espace.addEventListener("click", (evenement) => {
+  if (partieTerminee || evenement.target.closest("button")) {
+    return;
+  }
+  clics += 1;
+  if (clics % clicsAvantSouris === 0) {
+    ajouterSouris();
   }
 });
 
@@ -479,19 +620,54 @@ function jouerNote(frequence, debut, duree, type, volume) {
   oscillateur.stop(debut + duree + 0.02);
 }
 
+function jouerBruit(debut, duree, volume, frequence) {
+  const taille = Math.floor(audio.sampleRate * duree);
+  const tampon = audio.createBuffer(1, taille, audio.sampleRate);
+  const donnees = tampon.getChannelData(0);
+  for (let i = 0; i < taille; i++) {
+    donnees[i] = Math.random() * 2 - 1;
+  }
+  const source = audio.createBufferSource();
+  source.buffer = tampon;
+  const filtre = audio.createBiquadFilter();
+  filtre.type = "highpass";
+  filtre.frequency.value = frequence;
+  const volumeNote = audio.createGain();
+  volumeNote.gain.setValueAtTime(volume, debut);
+  volumeNote.gain.exponentialRampToValueAtTime(0.001, debut + duree);
+  source.connect(filtre);
+  filtre.connect(volumeNote);
+  volumeNote.connect(audio.destination);
+  source.start(debut);
+  source.stop(debut + duree);
+}
+
+function jouerAccord(fondamentale, debut, duree) {
+  jouerNote(fondamentale, debut, duree, "sawtooth", 0.05);
+  jouerNote(fondamentale * 2, debut, duree, "square", 0.03);
+  jouerNote(fondamentale * 3, debut, duree, "square", 0.02);
+}
+
 function jouerBoucle() {
   if (!musiqueActive || !audio) {
     return;
   }
   const debut = audio.currentTime + 0.05;
-  const temps = 0.24;
-  const melodie = [523, 659, 784, 659, 880, 784, 659, 587];
-  const basses = [131, 131, 196, 196, 220, 196, 175, 196];
-  for (let i = 0; i < melodie.length; i++) {
-    jouerNote(melodie[i], debut + i * temps, temps * 0.85, "square", 0.04);
-    jouerNote(basses[i], debut + i * temps, temps * 0.85, "triangle", 0.06);
+  const temps = 0.15;
+  const riff = [82, 82, 82, 98, 82, 82, 73, 82, 110, 110, 98, 82, 82, 98, 110, 82];
+  for (let i = 0; i < riff.length; i++) {
+    const moment = debut + i * temps;
+    jouerAccord(riff[i], moment, temps * 0.42);
+    if (i % 2 === 0) {
+      jouerNote(55, moment, 0.08, "sine", 0.12);
+    }
+    if (i % 4 === 2) {
+      jouerBruit(moment, 0.12, 0.08, 1800);
+    } else {
+      jouerBruit(moment, 0.03, 0.025, 7000);
+    }
   }
-  minuteurMusique = setTimeout(jouerBoucle, melodie.length * temps * 1000);
+  minuteurMusique = setTimeout(jouerBoucle, riff.length * temps * 1000);
 }
 
 function demarrerMusique() {

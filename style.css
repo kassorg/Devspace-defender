@@ -237,6 +237,101 @@ body {
   text-align: center;
 }
 
+/* Mini boss souris, sous la rangée des chats. */
+.souris {
+  position: absolute;
+  top: 340px;
+  left: 0;
+  width: 120px;
+  height: 64px;
+  background: #b9b9b9;
+  border-radius: 50% 46% 46% 50%;
+  z-index: 1;
+}
+
+.souris .oreille {
+  position: absolute;
+  top: -16px;
+  width: 26px;
+  height: 26px;
+  background: #b9b9b9;
+  border-radius: 50%;
+}
+
+.souris .oreille.gauche {
+  left: 22px;
+}
+
+.souris .oreille.droite {
+  left: 50px;
+}
+
+.souris .oreille::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  background: #ffb4c8;
+  border-radius: 50%;
+}
+
+.souris .oeil {
+  position: absolute;
+  top: 16px;
+  width: 14px;
+  height: 14px;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.souris .oeil.gauche {
+  left: 64px;
+}
+
+.souris .oeil.droite {
+  left: 84px;
+}
+
+.souris .pupille {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 6px;
+  height: 6px;
+  background: #222;
+  border-radius: 50%;
+}
+
+.souris .nez {
+  position: absolute;
+  top: 28px;
+  right: 8px;
+  width: 10px;
+  height: 8px;
+  background: #ff7b93;
+  border-radius: 50%;
+}
+
+.souris .queue {
+  position: absolute;
+  top: 18px;
+  left: -34px;
+  width: 38px;
+  height: 10px;
+  border: 3px solid #8a8a8a;
+  border-right: none;
+  border-radius: 16px 0 0 16px;
+}
+
+.souris .vie-boss {
+  top: 38px;
+  color: #333;
+  font-size: 16px;
+}
+
 /* Petit chat qui tombe quand le boss est touché. */
 .chaton {
   position: absolute;
