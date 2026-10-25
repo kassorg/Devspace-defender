@@ -196,8 +196,16 @@ function lacherChaton(elementBoss) {
   oreilleGauche.className = "oreille gauche";
   const oreilleDroite = document.createElement("span");
   oreilleDroite.className = "oreille droite";
+  const oeilGauche = document.createElement("span");
+  oeilGauche.className = "oeil gauche";
+  const oeilDroit = document.createElement("span");
+  oeilDroit.className = "oeil droite";
+  oeilGauche.appendChild(document.createElement("span")).className = "pupille";
+  oeilDroit.appendChild(document.createElement("span")).className = "pupille";
   chaton.appendChild(oreilleGauche);
   chaton.appendChild(oreilleDroite);
+  chaton.appendChild(oeilGauche);
+  chaton.appendChild(oeilDroit);
 
   const xChaton = rect.left - zone.left + rect.width / 2 - tailleChaton / 2;
   const yChaton = rect.bottom - zone.top - tailleChaton;
@@ -350,6 +358,34 @@ function monterLasers() {
   }
 }
 
+function suivreVaisseau(oeil, distanceMax) {
+  const pupille = oeil.querySelector(".pupille");
+  const zoneOeil = oeil.getBoundingClientRect();
+  const zoneVaisseau = vaisseau.getBoundingClientRect();
+  const centreX = zoneOeil.left + zoneOeil.width / 2;
+  const centreY = zoneOeil.top + zoneOeil.height / 2;
+  const cibleX = zoneVaisseau.left + zoneVaisseau.width / 2;
+  const cibleY = zoneVaisseau.top + zoneVaisseau.height / 2;
+  let decalageX = cibleX - centreX;
+  let decalageY = cibleY - centreY;
+  const distance = Math.hypot(decalageX, decalageY) || 1;
+  decalageX = (decalageX / distance) * distanceMax;
+  decalageY = (decalageY / distance) * distanceMax;
+  pupille.style.transform = "translate(" + decalageX + "px, " + decalageY + "px)";
+}
+
+function orienterYeux() {
+  const yeux = document.querySelectorAll(".boss .oeil, .chaton .oeil");
+  for (let i = 0; i < yeux.length; i++) {
+    const chat = yeux[i].closest(".boss, .chaton");
+    if (chat.hidden) {
+      continue;
+    }
+    const distanceMax = chat.classList.contains("boss") ? 12 : 2;
+    suivreVaisseau(yeux[i], distanceMax);
+  }
+}
+
 function deplacer() {
   if (partieTerminee) {
     requestAnimationFrame(deplacer);
@@ -379,6 +415,7 @@ function deplacer() {
   descendreAsteroide();
   deplacerBoss();
   descendreChatons();
+  orienterYeux();
   monterLasers();
   verifierCollisions();
   requestAnimationFrame(deplacer);

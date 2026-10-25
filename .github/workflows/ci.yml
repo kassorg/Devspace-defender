@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le projet
+        uses: actions/checkout@v4
+
+      - name: Vérifier les fichiers du jeu
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+
+      - name: Vérifier la syntaxe JavaScript
+        run: node --check script.js

@@ -178,16 +178,16 @@ body {
   top: 58px;
   width: 78px;
   height: 78px;
+  overflow: hidden;
   background: #fff;
   border: 4px solid #3a2414;
   border-radius: 50%;
 }
 
-.boss .oeil::after {
-  content: "";
+.boss .pupille {
   position: absolute;
-  left: 28px;
-  top: 24px;
+  left: 23px;
+  top: 19px;
   width: 32px;
   height: 40px;
   background: #2a2a2a;
@@ -265,16 +265,32 @@ body {
   right: 4px;
 }
 
-.chaton::before {
-  content: "";
+.chaton .oeil {
   position: absolute;
-  left: 7px;
-  top: 10px;
-  width: 5px;
-  height: 5px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.chaton .oeil.gauche {
+  left: 6px;
+}
+
+.chaton .oeil.droite {
+  right: 6px;
+}
+
+.chaton .pupille {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 4px;
+  height: 4px;
   background: #2a2a2a;
   border-radius: 50%;
-  box-shadow: 16px 0 0 #2a2a2a;
 }
 
 .chaton::after {
