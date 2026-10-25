@@ -22,8 +22,8 @@ jobs:
       - name: Verifier style.css
         run: test -f style.css
 
-      - name: Verifier game.js
-        run: test -f game.js
+      - name: Verifier script.js
+        run: test -f script.js
 
       - name: Validation terminee
         run: echo "Space Defender est pret !"
