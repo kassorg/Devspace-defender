@@ -1,47 +1,35 @@
-name: Deploy
+name: Deploy Space Defender
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  publier:
+  deploy:
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
-      url: ${{ steps.deploiement.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Récupérer le projet
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - name: Vérifier les fichiers du jeu
-        run: |
-          test -f index.html
-          test -f style.css
-          test -f script.js
-
-      - name: Vérifier la syntaxe JavaScript
-        run: node --check script.js
-
-      - name: Préparer GitHub Pages
+      - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Envoyer les fichiers
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: '.'
 
-      - name: Publier
-        id: deploiement
+      - name: Deploy
+        id: deployment
         uses: actions/deploy-pages@v4
