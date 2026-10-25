@@ -1,0 +1,29 @@
+name: Space Defender CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-game:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v7
+
+      - name: Verifier index.html
+        run: test -f index.html
+
+      - name: Verifier style.css
+        run: test -f style.css
+
+      - name: Verifier script.js
+        run: test -f script.js
+
+      - name: Validation terminee
+        run: echo "Space Defender est pret !"
