@@ -1,6 +1,8 @@
 const espace = document.getElementById("espace");
 const vaisseau = document.getElementById("vaisseau");
 const asteroide = document.getElementById("asteroide");
+const boss = document.getElementById("boss");
+const vieBoss = document.getElementById("vie-boss");
 const infos = document.getElementById("infos");
 const fin = document.getElementById("fin");
 const boutonRejouer = document.getElementById("rejouer");
@@ -12,9 +14,17 @@ const vitesseAsteroide = 3;
 const largeurLaser = 4;
 const hauteurLaser = 16;
 const vitesseLaser = 10;
+const largeurBoss = 96;
+const vitesseBoss = 2;
+const vieBossMax = 10;
+const pointsBoss = 100;
 
 let asteroideX = 0;
 let asteroideY = 0;
+let bossX = 0;
+let directionBoss = 1;
+let pointsDeVieBoss = vieBossMax;
+let bossPresent = true;
 
 let x = 0;
 let controleClavier = false;
@@ -70,7 +80,54 @@ function tirer() {
 }
 
 function afficherInfos() {
-  infos.textContent = "Points : " + points + "  ·  Vies : " + vies;
+  let texte = "Points : " + points + "  ·  Vies : " + vies;
+  if (bossPresent) {
+    texte += "  ·  Boss : " + pointsDeVieBoss;
+  }
+  infos.textContent = texte;
+}
+
+function placerBoss() {
+  const limite = Math.max(0, espace.clientWidth - largeurBoss);
+  bossX = limite / 2;
+  directionBoss = 1;
+  pointsDeVieBoss = vieBossMax;
+  bossPresent = true;
+  boss.hidden = false;
+  boss.style.left = bossX + "px";
+  vieBoss.textContent = pointsDeVieBoss;
+}
+
+function deplacerBoss() {
+  if (!bossPresent) {
+    return;
+  }
+
+  const limite = Math.max(0, espace.clientWidth - largeurBoss);
+  bossX += vitesseBoss * directionBoss;
+  if (bossX <= 0) {
+    bossX = 0;
+    directionBoss = 1;
+  }
+  if (bossX >= limite) {
+    bossX = limite;
+    directionBoss = -1;
+  }
+  boss.style.left = bossX + "px";
+}
+
+function blesserBoss() {
+  if (!bossPresent) {
+    return;
+  }
+  pointsDeVieBoss -= 1;
+  vieBoss.textContent = pointsDeVieBoss;
+  if (pointsDeVieBoss <= 0) {
+    bossPresent = false;
+    boss.hidden = true;
+    points += pointsBoss;
+  }
+  afficherInfos();
 }
 
 function seTouchent(a, b) {
@@ -95,9 +152,17 @@ function terminerPartie() {
 
 function verifierCollisions() {
   const zoneAsteroide = asteroide.getBoundingClientRect();
+  const zoneBoss = bossPresent ? boss.getBoundingClientRect() : null;
 
   for (let i = lasers.length - 1; i >= 0; i--) {
-    if (seTouchent(lasers[i].element.getBoundingClientRect(), zoneAsteroide)) {
+    const zoneLaser = lasers[i].element.getBoundingClientRect();
+    if (bossPresent && zoneBoss && seTouchent(zoneLaser, zoneBoss)) {
+      lasers[i].element.remove();
+      lasers.splice(i, 1);
+      blesserBoss();
+      continue;
+    }
+    if (seTouchent(zoneLaser, zoneAsteroide)) {
       lasers[i].element.remove();
       lasers.splice(i, 1);
       points += 10;
@@ -129,6 +194,7 @@ function rejouer() {
   vaisseau.style.left = "50%";
   vaisseau.style.transform = "translateX(-50%)";
   fin.hidden = true;
+  placerBoss();
   afficherInfos();
   placerAsteroideEnHaut();
 }
@@ -172,6 +238,7 @@ function deplacer() {
   }
 
   descendreAsteroide();
+  deplacerBoss();
   monterLasers();
   verifierCollisions();
   requestAnimationFrame(deplacer);
@@ -212,6 +279,7 @@ window.addEventListener("resize", () => {
 
 boutonRejouer.addEventListener("click", rejouer);
 
+placerBoss();
 afficherInfos();
 placerAsteroideEnHaut();
 requestAnimationFrame(deplacer);
