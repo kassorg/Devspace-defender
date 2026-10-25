@@ -1,0 +1,98 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: #000;
+  overflow: hidden;
+}
+
+/* L'espace occupe toute la fenêtre. */
+#espace {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+/*
+  Le vaisseau est un triangle vert.
+  "left" est modifié par JavaScript pour le déplacer.
+*/
+/* Petite pierre grise. "top" et "left" sont modifiés par JavaScript. */
+#asteroide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  background: #b8b8b8;
+  border-radius: 45% 55% 50% 50%;
+}
+
+#vaisseau {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-bottom: 36px solid #3dff7a;
+  transform: translateX(-50%);
+}
+
+/* Trait vert créé par JavaScript quand on appuie sur Espace. */
+.laser {
+  position: absolute;
+  width: 4px;
+  height: 16px;
+  background: #b8ffc8;
+}
+
+#infos {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 18px;
+}
+
+#fin {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-family: sans-serif;
+}
+
+#fin[hidden] {
+  display: none;
+}
+
+#fin p {
+  font-size: 48px;
+  letter-spacing: 0.08em;
+}
+
+#rejouer {
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
