@@ -8,10 +8,27 @@
 </head>
 <body>
   <div id="espace">
+    <div class="fond" aria-hidden="true">
+      <div class="etoiles loin"></div>
+      <div class="etoiles milieu"></div>
+      <div class="etoiles pres"></div>
+    </div>
     <p id="infos"></p>
-    <div id="boss" aria-label="Boss extraterrestre"><span id="vie-boss"></span></div>
+    <button type="button" id="musique">Musique</button>
+    <div id="boss" class="boss" aria-label="Boss chat">
+      <span class="oreille gauche"><span></span></span>
+      <span class="oreille droite"><span></span></span>
+      <span class="oeil gauche"></span>
+      <span class="oeil droite"></span>
+      <span class="nez"></span>
+      <span class="bouche"></span>
+      <span class="vie-boss"></span>
+    </div>
     <div id="asteroide" aria-label="Astéroïde"></div>
-    <div id="vaisseau" aria-label="Vaisseau"></div>
+    <div id="vaisseau" aria-label="Vaisseau">
+      <span class="mitraillette gauche"></span>
+      <span class="mitraillette droite"></span>
+    </div>
     <div id="fin" hidden>
       <p>GAME OVER</p>
       <button type="button" id="rejouer">Rejouer</button>

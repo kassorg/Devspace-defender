@@ -10,7 +10,7 @@ body {
 }
 
 body {
-  background: #000;
+  background: #02040c;
   overflow: hidden;
 }
 
@@ -19,60 +19,273 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #000;
+  background: #02040c;
   overflow: hidden;
+}
+
+/* Étoiles qui descendent : le vaisseau a l'air d'avancer. */
+.fond {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(80, 110, 200, 0.28), transparent 58%),
+    radial-gradient(ellipse at 15% 85%, rgba(70, 30, 120, 0.22), transparent 42%),
+    #02040c;
+}
+
+.etoiles,
+.etoiles::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.etoiles::after {
+  content: "";
+  top: 2000px;
+}
+
+.etoiles.loin {
+  box-shadow:
+    40px 80px #9fb4d6, 180px 260px #fff, 320px 140px #9fb4d6,
+    510px 420px #fff, 690px 90px #c9d7ee, 860px 610px #fff,
+    1040px 300px #9fb4d6, 1260px 180px #fff, 1480px 520px #c9d7ee,
+    90px 980px #fff, 260px 1240px #9fb4d6, 470px 860px #fff,
+    740px 1120px #c9d7ee, 980px 1480px #fff, 1210px 900px #9fb4d6,
+    150px 1760px #fff, 600px 1680px #c9d7ee, 1100px 1900px #fff;
+  animation: defiler 16s linear infinite;
+}
+
+.etoiles.loin::after {
+  box-shadow:
+    40px 80px #9fb4d6, 180px 260px #fff, 320px 140px #9fb4d6,
+    510px 420px #fff, 690px 90px #c9d7ee, 860px 610px #fff,
+    1040px 300px #9fb4d6, 1260px 180px #fff, 1480px 520px #c9d7ee,
+    90px 980px #fff, 260px 1240px #9fb4d6, 470px 860px #fff,
+    740px 1120px #c9d7ee, 980px 1480px #fff, 1210px 900px #9fb4d6,
+    150px 1760px #fff, 600px 1680px #c9d7ee, 1100px 1900px #fff;
+}
+
+.etoiles.milieu,
+.etoiles.milieu::after {
+  width: 2px;
+  height: 2px;
+}
+
+.etoiles.milieu {
+  box-shadow:
+    70px 160px #fff, 250px 480px #fff, 430px 220px #e8f1ff,
+    640px 700px #fff, 820px 340px #fff, 1010px 90px #fff,
+    1280px 560px #e8f1ff, 1460px 260px #fff, 180px 1100px #fff,
+    520px 1380px #fff, 900px 1600px #e8f1ff, 1180px 1240px #fff;
+  animation: defiler 8s linear infinite;
+}
+
+.etoiles.milieu::after {
+  box-shadow:
+    70px 160px #fff, 250px 480px #fff, 430px 220px #e8f1ff,
+    640px 700px #fff, 820px 340px #fff, 1010px 90px #fff,
+    1280px 560px #e8f1ff, 1460px 260px #fff, 180px 1100px #fff,
+    520px 1380px #fff, 900px 1600px #e8f1ff, 1180px 1240px #fff;
+}
+
+.etoiles.pres,
+.etoiles.pres::after {
+  width: 2px;
+  height: 16px;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.etoiles.pres {
+  box-shadow:
+    120px 200px #fff, 360px 640px #fff, 590px 120px #fff,
+    810px 880px #fff, 1080px 420px #fff, 1390px 260px #fff,
+    220px 1500px #fff, 760px 1280px #fff, 1240px 1760px #fff;
+  animation: defiler 3.5s linear infinite;
+}
+
+.etoiles.pres::after {
+  box-shadow:
+    120px 200px #fff, 360px 640px #fff, 590px 120px #fff,
+    810px 880px #fff, 1080px 420px #fff, 1390px 260px #fff,
+    220px 1500px #fff, 760px 1280px #fff, 1240px 1760px #fff;
+}
+
+@keyframes defiler {
+  from {
+    transform: translateY(-2000px);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /*
   Le vaisseau est un triangle vert.
   "left" est modifié par JavaScript pour le déplacer.
 */
-/* Boss violet en haut de l'écran. "left" est modifié par JavaScript. */
-#boss {
+/* Tête de chat, quatre fois plus grande que l'ancien boss. */
+.boss {
   position: absolute;
-  top: 48px;
+  top: 72px;
   left: 0;
-  width: 96px;
-  height: 62px;
+  width: 384px;
+  height: 248px;
+  background: #f6a35a;
+  border-radius: 46% 46% 40% 40%;
   z-index: 1;
 }
 
-#boss::before {
-  content: "";
+.boss .oreille {
   position: absolute;
-  left: 28px;
-  top: 0;
-  width: 40px;
-  height: 28px;
-  background:
-    radial-gradient(circle at 12px 16px, #d6ff4a 4px, transparent 5px),
-    radial-gradient(circle at 28px 16px, #d6ff4a 4px, transparent 5px),
-    #8b5cf6;
-  border-radius: 50% 50% 42% 42%;
+  top: -78px;
+  width: 0;
+  height: 0;
+  border-left: 52px solid transparent;
+  border-right: 52px solid transparent;
+  border-bottom: 100px solid #f6a35a;
 }
 
-#boss::after {
-  content: "";
+.boss .oreille.gauche {
+  left: 48px;
+}
+
+.boss .oreille.droite {
+  right: 48px;
+}
+
+.boss .oreille span {
   position: absolute;
-  left: 0;
-  top: 18px;
-  width: 96px;
-  height: 44px;
-  background: #6d28d9;
+  top: 28px;
+  left: -26px;
+  width: 0;
+  height: 0;
+  border-left: 26px solid transparent;
+  border-right: 26px solid transparent;
+  border-bottom: 58px solid #ffb4c8;
+}
+
+.boss .oeil {
+  position: absolute;
+  top: 58px;
+  width: 78px;
+  height: 78px;
+  background: #fff;
+  border: 4px solid #3a2414;
   border-radius: 50%;
 }
 
-#vie-boss {
+.boss .oeil::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  top: 24px;
+  width: 32px;
+  height: 40px;
+  background: #2a2a2a;
+  border-radius: 50%;
+}
+
+.boss .oeil.gauche {
+  left: 70px;
+}
+
+.boss .oeil.droite {
+  right: 70px;
+}
+
+.boss .nez {
+  position: absolute;
+  top: 148px;
+  left: 50%;
+  width: 36px;
+  height: 28px;
+  margin-left: -18px;
+  background: #ff7b93;
+  border-radius: 50%;
+}
+
+.boss .bouche {
+  position: absolute;
+  top: 176px;
+  left: 50%;
+  width: 36px;
+  height: 18px;
+  margin-left: -18px;
+  border-bottom: 4px solid #6b3a2a;
+  border-radius: 0 0 20px 20px;
+}
+
+.vie-boss {
   position: absolute;
   left: 0;
   right: 0;
-  top: 30px;
+  top: 198px;
   z-index: 1;
-  color: #fff;
+  color: #4a2418;
   font-family: sans-serif;
-  font-size: 16px;
+  font-size: 32px;
   font-weight: bold;
   text-align: center;
+}
+
+/* Petit chat qui tombe quand le boss est touché. */
+.chaton {
+  position: absolute;
+  width: 36px;
+  height: 28px;
+  background: #f6a35a;
+  border-radius: 46% 46% 40% 40%;
+  z-index: 2;
+}
+
+.chaton .oreille {
+  position: absolute;
+  top: -8px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid #f6a35a;
+}
+
+.chaton .oreille.gauche {
+  left: 4px;
+}
+
+.chaton .oreille.droite {
+  right: 4px;
+}
+
+.chaton::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  background: #2a2a2a;
+  border-radius: 50%;
+  box-shadow: 16px 0 0 #2a2a2a;
+}
+
+.chaton::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 17px;
+  width: 6px;
+  height: 4px;
+  background: #ff7b93;
+  border-radius: 50%;
 }
 
 /* Petite pierre grise. "top" et "left" sont modifiés par JavaScript. */
@@ -80,6 +293,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1;
   width: 28px;
   height: 28px;
   background: #b8b8b8;
@@ -90,17 +304,36 @@ body {
   position: absolute;
   bottom: 40px;
   left: 50%;
+  z-index: 1;
   width: 0;
   height: 0;
-  border-left: 18px solid transparent;
-  border-right: 18px solid transparent;
-  border-bottom: 36px solid #3dff7a;
+  border-left: 36px solid transparent;
+  border-right: 36px solid transparent;
+  border-bottom: 72px solid #3dff7a;
   transform: translateX(-50%);
+}
+
+.mitraillette {
+  position: absolute;
+  top: 48px;
+  width: 8px;
+  height: 22px;
+  background: #e8fff0;
+  border-radius: 2px;
+}
+
+.mitraillette.gauche {
+  left: -36px;
+}
+
+.mitraillette.droite {
+  left: 28px;
 }
 
 /* Trait vert créé par JavaScript quand on appuie sur Espace. */
 .laser {
   position: absolute;
+  z-index: 1;
   width: 4px;
   height: 16px;
   background: #b8ffc8;
@@ -114,6 +347,17 @@ body {
   color: #fff;
   font-family: sans-serif;
   font-size: 18px;
+}
+
+#musique {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 4;
+  padding: 8px 12px;
+  font-family: sans-serif;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 #fin {
